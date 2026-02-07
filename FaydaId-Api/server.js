@@ -62,29 +62,42 @@ app.post('/verify', async (req, res) => {
 });
 
 // --- 3. አዲስ ሰው ለመመዝገብ (Create) ---
+// --- አዲስ ሰው ለመመዝገብ (የተስተካከለ) ---
 app.post('/add-person', async (req, res) => {
-    const { fayda_id, fullName, email, dob, address, photo } = req.body;
+    const { fullName, email, dob, address, photo } = req.body;
+    
+    // በራሱ 12 የዘፈቀደ ቁጥሮችን ያመነጫል
+    const generatedFaydaId = Math.floor(100000000000 + Math.random() * 900000000000).toString();
+
     try {
         const query = `
             INSERT INTO users (fayda_id, fullName, email, dob, address, photo)
             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-        const values = [fayda_id, fullName, email, dob, address, photo];
+        const values = [generatedFaydaId, fullName, email, dob, address, photo];
         const result = await pool.query(query, values);
-        res.json({ success: true, message: "በተሳካ ሁኔታ ተመዝግቧል!", data: result.rows[0] });
+        
+        res.json({ 
+            success: true, 
+            message: "በተሳካ ሁኔታ ተመዝግቧል!", 
+            fayda_id: generatedFaydaId, // አዲሱን ቁጥር ለፍሮንት-ኤንድ ይመልሳል
+            data: result.rows[0] 
+        });
     } catch (err) {
-        res.status(500).json({ success: false, error: "ምዝገባው አልተሳካም ወይም መታወቂያው ቀድሞ አለ።" });
+        res.status(500).json({ success: false, error: "ምዝገባው አልተሳካም።" });
     }
 });
 
+
 // --- 4. መረጃ ለመቀየር (Update) ---
-app.put('/update-person/:id', async (req, res) => {
-    const { id } = req.params;
+app.put('/update-person/:fayda_id', async (req, res) => {
+    const { fayda_id } = req.params;
     const { fullName, email, address } = req.body;
     try {
         const query = 'UPDATE users SET fullName=$1, email=$2, address=$3 WHERE fayda_id=$4 RETURNING *';
-        const result = await pool.query(query, [fullName, email, address, id]);
+        const result = await pool.query(query, [fullName, email, address, fayda_id]);
+        
         if (result.rows.length > 0) {
-            res.json({ success: true, message: "መረጃው ተስተካክሏል!" });
+            res.json({ success: true, message: "መረጃው ተስተካክሏል!", data: result.rows[0] });
         } else {
             res.status(404).json({ success: false, message: "ሰውየው አልተገኘም" });
         }
