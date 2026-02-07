@@ -92,7 +92,16 @@ app.put('/update-person/:id', async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 });
-
+// --- 5. Login Route (ፍሮንት-ኤንድህ የሚፈልገው) ---
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    // ለጊዜው በቋሚነት (Static) እንዲገባ
+    if (username === "admin" && password === "fayda2024") {
+        res.json({ success: true, token: "fake-jwt-token", message: "እንኳን ደህና መጡ!" });
+    } else {
+        res.status(401).json({ success: false, message: "የተሳሳተ የተጠቃሚ ስም ወይም የይለፍ ቃል!" });
+    }
+});
 app.get('/', (req, res) => res.send('Welcome to Direct-Bet API (PostgreSQL Ready)!'));
 
 const PORT = process.env.PORT || 5000;
