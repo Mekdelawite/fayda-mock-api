@@ -73,9 +73,9 @@ app.post('/add-person', async (req, res) => {
 
     try {
         const query = `
-            INSERT INTO users (fayda_id, fullName, email, dob, address, photo)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
-        const values = [generatedFaydaId, fullName, email, dob, address, photo];
+            INSERT INTO users (fayda_id, fullName, email, dob, address,birthPlace,Nationality, photo)
+            VALUES ($1, $2, $3, $4, $5, $6,$7,$8) RETURNING *`;
+        const values = [generatedFaydaId, fullName, email, dob, address,birthPlace,Nationality, photo];
         const result = await pool.query(query, values);
         
         res.json({ 
