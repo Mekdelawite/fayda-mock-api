@@ -23,6 +23,8 @@ const initializeDB = async () => {
             email VARCHAR(255),
             dob DATE,
             address TEXT,
+            birthPlace Text,
+            Nationality Text,
             photo TEXT,
             status VARCHAR(50) DEFAULT 'Verified'
         );
@@ -64,7 +66,7 @@ app.post('/verify', async (req, res) => {
 // --- 3. አዲስ ሰው ለመመዝገብ (Create) ---
 // --- አዲስ ሰው ለመመዝገብ (የተስተካከለ) ---
 app.post('/add-person', async (req, res) => {
-    const { fullName, email, dob, address, photo } = req.body;
+    const { fullName, email, dob, address,birthPlace,Nationality, photo } = req.body;
     
     // በራሱ 12 የዘፈቀደ ቁጥሮችን ያመነጫል
     const generatedFaydaId = Math.floor(100000000000 + Math.random() * 900000000000).toString();
