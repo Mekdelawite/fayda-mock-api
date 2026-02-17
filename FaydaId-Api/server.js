@@ -23,6 +23,7 @@ const initializeDB = async () => {
             email VARCHAR(255),
             dob DATE,
             address TEXT,
+            phoneNumber,
             birthPlace Text,
             Nationality Text,
             photo TEXT,
@@ -66,16 +67,16 @@ app.post('/verify', async (req, res) => {
 // --- 3. አዲስ ሰው ለመመዝገብ (Create) ---
 // --- አዲስ ሰው ለመመዝገብ (የተስተካከለ) ---
 app.post('/add-person', async (req, res) => {
-    const { fullName, email, dob, address,birthPlace,Nationality, photo } = req.body;
+    const { fullName, email, dob, address,phoneNumber,birthPlace,Nationality, photo } = req.body;
     
     // በራሱ 12 የዘፈቀደ ቁጥሮችን ያመነጫል
     const generatedFaydaId = Math.floor(100000000000 + Math.random() * 900000000000).toString();
 
     try {
         const query = `
-            INSERT INTO users (fayda_id, fullName, email, dob, address,birthPlace,Nationality, photo)
-            VALUES ($1, $2, $3, $4, $5, $6,$7,$8) RETURNING *`;
-        const values = [generatedFaydaId, fullName, email, dob, address,birthPlace,Nationality, photo];
+            INSERT INTO users (fayda_id, fullName, email, dob, address,phoneNumber,birthPlace,Nationality, photo)
+            VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9) RETURNING *`;
+        const values = [generatedFaydaId, fullName, email, dob, address,phoneNumber,birthPlace,Nationality, photo];
         const result = await pool.query(query, values);
         
         res.json({ 
